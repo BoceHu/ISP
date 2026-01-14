@@ -92,7 +92,7 @@ class ISPSO2PretrainedPolicy(BaseImagePolicy):
             kernel_size=kernel_size,
             n_groups=n_groups,
             cond_predict_scale=cond_predict_scale,
-            N=8,
+            N=N,
             lmax=lmax,
         )
 

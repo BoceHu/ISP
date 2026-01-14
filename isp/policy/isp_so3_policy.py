@@ -40,7 +40,7 @@ class ISPSO3Policy(BaseImagePolicy):
         # image
         crop_shape=(76, 76),
         # arch
-        N=8,
+        N=60,
         enc_n_hidden=128,
         diffusion_step_embed_dim=256,
         down_dims=(256, 512, 1024),
@@ -90,7 +90,7 @@ class ISPSO3Policy(BaseImagePolicy):
             kernel_size=kernel_size,
             n_groups=n_groups,
             cond_predict_scale=cond_predict_scale,
-            N=60,
+            N=N,
             lmax=lmax,
         )
 
