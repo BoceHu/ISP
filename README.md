@@ -31,8 +31,8 @@ NeurIPS 2025 (Spotlight)
 
 1. Clone this repo
     ```bash
-    git clone https://github.com/BoceHu/isp.git
-    cd isp
+    git clone https://github.com/BoceHu/ISP.git
+    cd ISP
     ```
 
 1. Install environment:
@@ -48,7 +48,7 @@ NeurIPS 2025 (Spotlight)
     cd mimicgen_environments
     git checkout 45db4b35a5a79e82ca8a70ce1321f855498ca82c
     pip install -e .
-    cd ../isp
+    cd ../ISP
     ```
 1. Make sure mujoco version is 2.3.2 (required by mimicgen)
     ```bash
@@ -61,7 +61,7 @@ Please visit the link below to download datasets.
 
  https://huggingface.co/datasets/amandlek/mimicgen_datasets/tree/main/core
 
-Make sure the dataset is kept under `/path/to/isp/data/robomimic/datasets/[dataset]/[dataset].hdf5`
+Make sure the dataset is kept under `/path/to/ISP/data/robomimic/datasets/[dataset]/[dataset].hdf5`
 
 ### Generating larger FOV observation
 
@@ -87,9 +87,9 @@ python isp/scripts/robomimic_dataset_conversion.py -i data/robomimic/datasets/[d
 python isp/scripts/robomimic_dataset_conversion.py -i data/robomimic/datasets/stack_d1/stack_d1_fisheye.hdf5 -o data/robomimic/datasets/stack_d1/stack_d1_fisheye_abs.hdf5 -n 16
 ```
 
-put the processed dataset under `isp/data/robomimic/datasets/[task_name]/`
+put the processed dataset under `ISP/data/robomimic/datasets/[task_name]/`
 
-e.g. `isp/data/robomimic/datasets/stack_d1/stack_d1_fisheye_abs.hdf5`
+e.g. `ISP/data/robomimic/datasets/stack_d1/stack_d1_fisheye_abs.hdf5`
 
 ## Training
 To train our method on Stack D1 task:
