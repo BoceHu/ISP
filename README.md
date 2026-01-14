@@ -1,6 +1,6 @@
 # 3D Equivariant Visuomotor Policy Learning via Spherical Projection
 
-[Project Website](https://https://isp-3d.github.io/) | [Paper](https://arxiv.org/pdf/2505.16969) | [Video](https://youtu.be/b1aAnbDHQh0?si=DGoHkV6DgSMSa7VS)  
+[Project Website](https://isp-3d.github.io/) | [Paper](https://arxiv.org/pdf/2505.16969) | [Video](https://youtu.be/b1aAnbDHQh0?si=DGoHkV6DgSMSa7VS)  
 
 <a href="https://bocehu.github.io/">Boce Hu</a><sup>1</sup>,
 <a href="https://www.dianwang.io/">Dian Wang</a><sup>1</sup>,
