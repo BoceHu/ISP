@@ -70,7 +70,7 @@ class ISPSO2PretrainedPolicy(BaseImagePolicy):
             obs_shape=obs_shape_meta["robot0_eye_in_hand_image"]["shape"],
             crop_shape=crop_shape,
             n_hidden=enc_n_hidden,
-            N=N,
+            N=8,
             initialize=initialize,
             lmax=lmax,
             s2_fdim=s2_fdim,

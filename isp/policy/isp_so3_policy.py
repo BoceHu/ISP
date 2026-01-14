@@ -63,12 +63,12 @@ class ISPSO3Policy(BaseImagePolicy):
         assert len(action_shape) == 1
         action_dim = action_shape[0]
         obs_shape_meta = shape_meta["obs"]
-
+    
         self.enc = ISPObsEnc(
             obs_shape=obs_shape_meta["robot0_eye_in_hand_image"]["shape"],
             crop_shape=crop_shape,
             n_hidden=enc_n_hidden,
-            N=N,
+            N=8,
             initialize=initialize,
             lmax=lmax,
             s2_fdim=s2_fdim,

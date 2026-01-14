@@ -46,7 +46,7 @@ policy:
   kernel_size: 5
   n_groups: 8
   cond_predict_scale: True
-  rot_aug: False
+  rot_aug: True
 
   # isp params
   lmax: 6
