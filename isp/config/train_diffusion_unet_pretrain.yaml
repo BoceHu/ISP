@@ -1,0 +1,239 @@
+defaults:
+  - _self_
+  - task: mimicgen_abs
+
+name: diff_c_pretrain
+_target_: isp.workspace.train_diffusion_unet_hybrid_workspace.TrainDiffusionUnetHybridWorkspace
+
+exp_name: "default"
+
+task_name: stack_d1
+n_demo: 200
+horizon: 16
+n_obs_steps: 2
+low_dim_obs_horizon: 2
+img_obs_horizon: 2
+n_action_steps: 8
+n_latency_steps: 0
+dataset_obs_steps: ${n_obs_steps}
+past_action_visible: False
+obs_as_global_cond: True
+dataset: isp.dataset.robomimic_replay_image_dataset.RobomimicReplayImageDataset
+dataset_path: data/robomimic/datasets/${task_name}/${task_name}_fisheye_abs.hdf5
+
+shape_meta:
+  obs:
+    robot0_eye_in_hand_image:
+      shape: [ 3, 84, 84 ]
+      horizon: ${img_obs_horizon}
+      type: rgb
+    robot0_eef_pos:
+      shape: [ 3 ]
+      horizon: ${low_dim_obs_horizon}
+      # type default: low_dim
+    robot0_eef_quat:
+      shape: [ 4 ]
+      horizon: ${low_dim_obs_horizon}
+    robot0_gripper_qpos:
+      shape: [ 2 ]
+      horizon: ${low_dim_obs_horizon}
+  action:
+    shape: [ 10 ]
+
+policy:
+  _target_: isp.policy.diffusion_unet_pretrained_policy.DiffusionUnetPretrainedPolicy
+
+  shape_meta: ${shape_meta}
+  
+  noise_scheduler:
+    _target_: diffusers.schedulers.scheduling_ddpm.DDPMScheduler
+    num_train_timesteps: 100
+    beta_start: 0.0001
+    beta_end: 0.02
+    beta_schedule: squaredcos_cap_v2
+    variance_type: fixed_small # Yilun's paper uses fixed_small_log instead, but easy to cause Nan
+    clip_sample: True # required when predict_epsilon=False
+    prediction_type: epsilon # or sample
+
+  obs_encoder:
+    _target_: isp.model.vision.timm_obs_encoder.TimmObsEncoder
+    shape_meta: ${shape_meta}
+
+    ##### from scratch #####
+    # model_name: 'vit_base_patch16_224'
+    # model_name: 'resnet34'
+    # model_name: 'vit_tiny_patch16_224'
+    # model_name: 'efficientnet_b0'
+    # model_name: 'efficientnet_b3'
+    # pretrained: False
+    # frozen: False
+
+    ##### from scratch #####
+    # model_name: 'resnet34.a1_in1k'
+    # model_name: 'vit_base_patch16_clip_224.openai'
+    # model_name: 'pvt_v2_b0.in1k'
+    # model_name: 'resnet18.a1_in1k'
+    model_name: 'resnet18.tv_in1k'
+    # model_name: 'convnext_base.clip_laion2b_augreg_ft_in12k'
+    pretrained: True
+    frozen: False
+
+    
+    global_pool: ''
+
+    # 'avg' or 'max' or 'soft_attention' or 'spatial_embedding' or 'transformer' or 'attention_pool_2d'
+    feature_aggregation: 'spatial_softmax'
+    # feature_aggregation: 'adaptive_avg_pool2d'
+    # feature_aggregation: null
+    position_encording: 'sinusoidal' # 'learnable' or 'sinusoidal'. it only works for transformer
+
+    # it only works for resnet. 32 (7x7) or 16 (14x14)
+    downsample_ratio: 32
+
+    transforms:
+      # - _target_: torchvision.transforms.Resize
+      #   size: 224
+      #   antialias: True
+      # - _target_: torchvision.transforms.Normalize
+      #   mean: [0.485, 0.456, 0.406]
+      #   std: [0.229, 0.224, 0.225]
+      - _target_: isp.model.vision.timm_obs_encoder.TrainRandomTestCenterCrop
+        size: 76
+      # - _target_: torchvision.transforms.Resize
+      #   size: 84
+      #   antialias: True
+      # - _target_: torchvision.transforms.RandomCrop
+        # size: 76
+      
+      # - type: RandomCrop
+      #   ratio: 0.95
+      # RandomRotation is not compatible with BF16
+      # - _target_: torchvision.transforms.RandomRotation
+      #   degrees:
+      #     - -5.0
+      #     - 5.0
+      #   expand: false
+      # - _target_: torchvision.transforms.ColorJitter
+      #   brightness: 0.3
+      #   contrast: 0.4
+      #   saturation: 0.5
+      #   hue: 0.08
+      # - _target_: torchvision.transforms.RandomPerspective
+      #   distortion_scale: 0.5
+      #   p: 1.0
+      # - _target_: torchvision.transforms.ElasticTransform
+      #   alpha: 50.0
+      #   sigma: 5.0
+      # - _target_: torchvision.transforms.RandomPerspective
+      #   distortion_scale: 0.5
+      #   p: 1.0
+      # - _target_: torchvision.transforms.ElasticTransform
+      #   alpha: 50.0
+      #   sigma: 5.0
+      # - _target_: torchvision.transforms.RandomCrop
+        # size: 192
+
+    use_group_norm: True
+    share_rgb_model: False
+    imagenet_norm: True
+
+  horizon: ${horizon}
+  n_action_steps: ${eval:'${n_action_steps}+${n_latency_steps}'}
+  n_obs_steps: ${n_obs_steps}
+  num_inference_steps: 100
+  obs_as_global_cond: ${obs_as_global_cond}
+  # crop_shape: null
+  diffusion_step_embed_dim: 128
+  down_dims: [512, 1024, 2048]
+  kernel_size: 5
+  n_groups: 8
+  cond_predict_scale: True
+  rot_aug: True
+
+  # scheduler.step params
+  # predict_epsilon: True
+
+ema:
+  _target_: isp.model.diffusion.ema_model.EMAModel
+  update_after_step: 0
+  inv_gamma: 1.0
+  power: 0.75
+  min_value: 0.0
+  max_value: 0.9999
+
+dataloader:
+  batch_size: 64
+  num_workers: 8
+  shuffle: True
+  pin_memory: True
+  persistent_workers: True
+
+val_dataloader:
+  batch_size: 64
+  num_workers: 8
+  shuffle: False
+  pin_memory: True
+  persistent_workers: True
+
+optimizer:
+  _target_: torch.optim.AdamW
+  lr: 1.0e-4
+  betas: [0.95, 0.999]
+  eps: 1.0e-8
+  weight_decay: 1.0e-6
+
+training:
+  device: "cuda:0"
+  seed: 0
+  debug: False
+  resume: True
+  # optimization
+  lr_scheduler: cosine
+  lr_warmup_steps: 500
+  num_epochs: ${eval:'60000 / ${n_demo}'}
+  gradient_accumulate_every: 1
+  # EMA destroys performance when used with BatchNorm
+  # replace BatchNorm with GroupNorm.
+  use_ema: True
+  # training loop control
+  # in epochs
+  rollout_every: ${eval:'1000 / ${n_demo}'}
+  checkpoint_every: ${eval:'1000 / ${n_demo}'}
+  val_every: 1
+  sample_every: 5
+  # steps per epoch
+  max_train_steps: null
+  max_val_steps: null
+  # misc
+  tqdm_interval_sec: 1.0
+
+logging:
+  project: isp_${task_name}
+  resume: True
+  mode: online
+  name: diff_c_pre_res18_demo${n_demo}
+  tags: ["${name}", "${task_name}", "${exp_name}"]
+  id: null
+  group: null
+
+checkpoint:
+  topk:
+    monitor_key: test_mean_score
+    mode: max
+    k: 2
+    format_str: 'epoch={epoch:04d}-test_mean_score={test_mean_score:.3f}.ckpt'
+  save_last_ckpt: True
+  save_last_snapshot: False
+
+multi_run:
+  run_dir: data/outputs/${now:%Y.%m.%d}/${now:%H.%M.%S}_${name}_${task_name}
+  wandb_name_base: ${now:%Y.%m.%d-%H.%M.%S}_${name}_${task_name}
+
+hydra:
+  job:
+    override_dirname: ${name}
+  run:
+    dir: data/outputs/${now:%Y.%m.%d}/${now:%H.%M.%S}_${name}_${task_name}
+  sweep:
+    dir: data/outputs/${now:%Y.%m.%d}/${now:%H.%M.%S}_${name}_${task_name}
+    subdir: ${hydra.job.num}
