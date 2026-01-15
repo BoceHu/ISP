@@ -7,6 +7,7 @@ import torch.nn.functional as F
 
 import e3nn
 from e3nn import o3
+import e3nn.nn
 import healpy as hp
 import numpy as np
 from functorch.einops import rearrange

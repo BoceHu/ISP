@@ -10,6 +10,7 @@ from e3nn import o3
 import healpy as hp
 import numpy as np
 from einops import rearrange
+import e3nn.nn
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(os.path.join(os.path.dirname(__file__), "."))
@@ -282,8 +283,7 @@ class I2SPolicy(nn.Module):
         x = torch.einsum(
             "bij,bfj->bfi",
             self.irreps.D_from_quaternion(
-                torch.cat([quaternion[:, 3:], quaternion[:, :3]], dim=1).cpu()
-            ).to(x.device),
+                torch.cat([quaternion[:, 3:], quaternion[:, :3]], dim=1)),
             x,
         )
 

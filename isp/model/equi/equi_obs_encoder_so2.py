@@ -9,6 +9,7 @@ import isp.model.vision.crop_randomizer as dmvc
 from isp.model.common.rotation_transformer import RotationTransformer
 from isp.model.equi.i2s_policy import I2SPolicy
 import e3nn
+import e3nn.nn
 from e3nn import o3
 from isp.model.equi.isp_util import (
     s2_irreps,

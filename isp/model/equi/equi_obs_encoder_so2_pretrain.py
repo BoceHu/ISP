@@ -17,6 +17,7 @@ from isp.model.equi.isp_util import (
 )
 import e3nn
 from e3nn import o3
+import e3nn.nn
 
 
 class ISPObsEnc(ModuleAttrMixin):

@@ -1,5 +1,6 @@
 import torch
 import e3nn
+import e3nn.nn
 from e3nn import o3
 import healpy as hp
 import numpy as np

@@ -3,6 +3,7 @@ import math
 import healpy as hp
 import numpy as np
 from e3nn import o3
+import e3nn.nn
 import torch.nn as nn
 
 

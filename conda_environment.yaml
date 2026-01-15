@@ -60,6 +60,6 @@ dependencies:
     - robosuite @ https://github.com/BoceHu/robosuite/archive/b8bb3d995c228a9c38caa44dfb14cfcdb50539a5.tar.gz
     - robomimic @ https://github.com/BoceHu/robomimic/archive/6737667bc1147faf542a73ce1ddfa120ecef41b4.tar.gz
     - robosuite-task-zoo  @ https://github.com/BoceHu/robosuite-task-zoo/archive/96e3e5cb06553655be7aa6ced03a98b52fdd2981.tar.gz
-    - e3nn==0.5.5
+    - e3nn @ git+https://github.com/BoceHu/e3nn.git
     - healpy
     - equivision @ git+https://github.com/dmklee/equivision
