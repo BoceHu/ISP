@@ -1,10 +1,10 @@
 """
 Usage:
 Training:
-EGL_DEVICE_ID=0 MUJOCO_EGL_DEVICE_ID=0 python train.py --config-name=train_equi_diffusion_unet_abs task_name=stack_three_d1 n_demo=100 training.device=cuda:0 training.seed=1
+EGL_DEVICE_ID=0 MUJOCO_EGL_DEVICE_ID=0 python train.py --config-name=train_isp_so2 task_name=stack_three_d1 n_demo=100 training.device=0 training.seed=1
 
 if cuda out of memory, try:
-MUJOCO_GL=osmesa PYOPENGL_PLATTFORM=osmesa python train.py --config-name=train_equi_diffusion_unet_abs task_name=stack_three_d1 n_demo=100 training.device=cuda:0 training.seed=1
+MUJOCO_GL=osmesa PYOPENGL_PLATTFORM=osmesa python train.py --config-name=train_isp_so2 task_name=stack_three_d1 n_demo=100 training.device=0 training.seed=1
 """
 
 import sys

@@ -306,7 +306,8 @@ class I2SPolicy(nn.Module):
         x = torch.einsum(
             "bij,bfj->bfi",
             self.irreps.D_from_quaternion(
-                torch.cat([quaternion[:, 3:], quaternion[:, :3]], dim=1)),
+                torch.cat([quaternion[:, 3:], quaternion[:, :3]], dim=1)
+            ),
             x,
         )
 
