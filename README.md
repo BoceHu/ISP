@@ -3,7 +3,7 @@
 [Project Website](https://isp-3d.github.io/) | [Paper](https://arxiv.org/pdf/2505.16969) | [Video](https://youtu.be/b1aAnbDHQh0?si=DGoHkV6DgSMSa7VS)  
 
 <a href="https://bocehu.github.io/">Boce Hu</a><sup>1</sup>,
-<a href="https://www.dianwang.io/">Dian Wang</a><sup>1</sup>,
+<a href="https://www.dianwang.io/">Dian Wang</a><sup>2</sup>,
 <a href="https://dmklee.github.io/">David Klee</a><sup>1</sup>,
 <a href="https://heng-tian.github.io/">Heng Tian</a><sup>1</sup>,
 <a href="https://zxp-s-works.github.io/">Xupeng Zhu</a><sup>1</sup>,
@@ -22,7 +22,7 @@ NeurIPS 2025 (Spotlight)
     ```bash
     sudo apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf
     ```
-1. Install gfortran (dependancy for escnn) 
+1. Install gfortran (dependency for escnn) 
     ```bash
     sudo apt install -y gfortran
     ```
@@ -57,13 +57,13 @@ NeurIPS 2025 (Spotlight)
 
 ## Dataset
 ### Download Dataset
-Please visit the link below to download datasets.
+Please visit the link below to download the datasets.
 
  https://huggingface.co/datasets/amandlek/mimicgen_datasets/tree/main/core
 
 Make sure the dataset is kept under `/path/to/ISP/data/robomimic/datasets/[dataset]/[dataset].hdf5`
 
-### Generating larger FOV observation
+### Generating a larger FOV observation
 
 ```bash
 # Template
@@ -76,7 +76,7 @@ python isp/scripts/dataset_states_to_obs.py --input data/robomimic/datasets/stac
 ```
 
 ### Convert Action Space in Dataset
-The downloaded dataset has a relative action space. To train with absolute action space, the dataset needs to be converted accordingly
+The downloaded dataset has a relative action space. To train with an absolute action space, the dataset needs to be converted accordingly
 ```bash
 # Template
 python isp/scripts/robomimic_dataset_conversion.py -i data/robomimic/datasets/[dataset]/[dataset]_fisheye.hdf5 -o data/robomimic/datasets/[dataset]/[dataset]_fisheye_abs.hdf5 -n [n_worker]
@@ -152,6 +152,6 @@ Please see the [LICENSE](LICENSE) file for the full license text and detailed te
 
 
 ## Acknowledgement
-* Our repo is built upon the origional [Equivariant Diffusion Policy](https://github.com/pointW/equidiff).
+* Our repo is built upon the original [Equivariant Diffusion Policy](https://github.com/pointW/equidiff).
 * Our Diffusion Policy baseline is adapted from the codebase of [Diffusion Policy](https://github.com/real-stanford/diffusion_policy).
 * Our ACT baseline is adapted from its [original repo](https://github.com/tonyzhaozh/act).
