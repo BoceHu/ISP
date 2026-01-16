@@ -56,8 +56,7 @@ dependencies:
     - wandb==0.23.1
     - pygame
     - imagecodecs==2022.9.26
-    - escnn @ https://github.com/BoceHu/escnn/archive/3b1ec94d353d80af8b9943ced9639d1526b9e769.tar.gz
-    - robosuite @ https://github.com/BoceHu/robosuite/archive/b8bb3d995c228a9c38caa44dfb14cfcdb50539a5.tar.gz
+    - robosuite @ https://github.com/BoceHu/robosuite/archive/31f05760aeee769b7d362118c6c5d5163fc24292.tar.gz
     - robomimic @ https://github.com/BoceHu/robomimic/archive/6737667bc1147faf542a73ce1ddfa120ecef41b4.tar.gz
     - robosuite-task-zoo  @ https://github.com/BoceHu/robosuite-task-zoo/archive/96e3e5cb06553655be7aa6ced03a98b52fdd2981.tar.gz
     - e3nn @ git+https://github.com/BoceHu/e3nn.git
