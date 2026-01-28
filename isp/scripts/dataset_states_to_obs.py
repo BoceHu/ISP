@@ -84,7 +84,7 @@ def extract_trajectory(
     if env_meta["env_name"].startswith("PickPlace_"):
         camera_names = ["birdview", "agentview", "robot0_eye_in_hand"]
     else:
-        camera_names = ["birdview", "agentview", "sideview", "robot0_eye_in_hand"]
+        camera_names = ["agentview", "robot0_eye_in_hand"]
     env = EnvUtils.create_env_for_data_processing(
         env_meta=env_meta,
         # camera_names=['frontview', 'birdview', 'agentview', 'sideview', 'agentview_full', 'robot0_robotview', 'robot0_eye_in_hand'],
@@ -180,7 +180,7 @@ def dataset_states_to_obs(args):
     if env_meta["env_name"].startswith("PickPlace_"):
         camera_names = ["birdview", "agentview", "robot0_eye_in_hand"]
     else:
-        camera_names = ["birdview", "agentview", "sideview", "robot0_eye_in_hand"]
+        camera_names = [ "agentview", "robot0_eye_in_hand"]
     env = EnvUtils.create_env_for_data_processing(
         env_meta=env_meta,
         # camera_names=['frontview', 'birdview', 'agentview', 'sideview', 'agentview_full', 'robot0_robotview', 'robot0_eye_in_hand'],

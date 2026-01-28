@@ -40,6 +40,14 @@ NeurIPS 2025 (Spotlight)
     mamba env create -f conda_environment.yaml
     conda activate isp
     ```
+    
+    If you are using a Blackwell-architecture GPU (e.g., RTX 5090), please follow the steps below:
+    ```
+    mamba env create -f env_blackwell.yaml
+    conda activate isp
+    pip install --no-build-isolation "git+https://github.com/facebookresearch/pytorch3d.git"
+    ```
+    This will create the appropriate environment and build PyTorch3D from source, which is required for Blackwell GPUs.
 
 1. Install mimicgen:
     ```bash
