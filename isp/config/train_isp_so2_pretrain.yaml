@@ -72,7 +72,7 @@ dataloader:
   shuffle: True
   pin_memory: True
   persistent_workers: True
-  drop_last: true
+  drop_last: false
 
 val_dataloader:
   batch_size: 64

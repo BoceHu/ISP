@@ -8,26 +8,18 @@ import escnn
 import e3nn
 import e3nn.nn
 from e3nn import o3
-import healpy as hp
 import numpy as np
-from einops import rearrange
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(os.path.join(os.path.dirname(__file__), "."))
 
-from isp_equi_img_encoder import EquiResnet18, EquiResnet34, EquiResnet50, EquiResnet1x1
-from isp_img_encoder import Resnet18, Resnet34, Resnet50
 from equivision import models as equivision_models
 from typing import Callable
 from isp_util import (
     s2_healpix_grid,
-    s2_near_identity_grid,
-    s2_irreps,
-    so3_irreps,
     so3_near_identity_grid,
     S2Conv,
     SO3Conv,
-    rotate_s2,
 )
 
 
@@ -239,7 +231,6 @@ class I2SPolicy(nn.Module):
         s2_kernel_grid = s2_healpix_grid(max_beta=np.inf, rec_level=1)
         self.s2_conv = S2Conv(s2_fdim, so3_fdim, lmax, s2_kernel_grid)
         self.s2_act = e3nn.nn.SO3Activation(lmax, lmax, act=torch.relu_, resolution=8)
-        # self.s2_act = e3nn.nn.S2Activation(s2_irreps(lmax), torch.tanh, 80, lmax_out=lmax)
         self.irreps = o3.Irreps([(1, (l, 1)) for l in range(lmax + 1)])
 
         # so3_kernel_grid = so3_healpix_grid(rec_level=3)
@@ -247,38 +238,6 @@ class I2SPolicy(nn.Module):
         self.so3_conv_1 = SO3Conv(so3_fdim, 64, lmax, so3_kernel_grid, lmax)
         self.so3_act_1 = e3nn.nn.SO3Activation(lmax, 6, act=torch.relu_, resolution=8)
         self.so3_conv_2 = SO3Conv(64, f_out, 6, so3_kernel_grid, 6)
-
-        # align the harmonic frame to the general frame (This is for any fixed general frame)
-        alpha = torch.tensor(0, dtype=torch.float32)
-        beta = torch.tensor(np.pi, dtype=torch.float32)
-        gamma = torch.tensor(3 * np.pi / 2, dtype=torch.float32)
-        self.register_buffer(
-            "camera_cali", self.irreps.D_from_angles(alpha, beta, gamma)
-        )
-        ###############################################
-        # Frame alignment for projected spherical harmonics
-        #
-        # Important:
-        # The I2S projected spherical harmonics (SO(3) irreps) used here
-        # are defined in a projector-specific axis convention, e.g., using the y-axis as the polar axis.
-        #
-        # In contrast, the input images follow the OpenGL camera convention, and robot actions
-        # are defined in the gripper/world convention. These axis conventions generally differ,
-        # e.g., using the z-axis as the polar axis.
-        #
-        # Therefore, we must explicitly align the harmonic
-        # frame with the physical coordinate frames so that SO(3) actions in representation space
-        # correspond to the intended physical axes.
-        #
-        # For instance, if the spherical harmonics assume the y-axis as the "up"/polar axis,
-        # while the gripper pose (quaternion) is defined with the z-axis as up in the world frame,
-        # directly applying the quaternion rotation would rotate features around mismatched axes,
-        # leading to semantically incorrect equivariant transformations.
-        #
-        # This alignment step ensures that the representation space correctly captures the intended
-        # physical rotations, allowing equivariant features to accurately transform under the
-        # gripper's actual world orientation.
-        ###############################################
 
     def forward(self, x, quaternion):
         """Returns so3 irreps
@@ -292,15 +251,6 @@ class I2SPolicy(nn.Module):
         assert x.shape[2] == 7, "Only support 7x7 output shape"
         # output size: 256 1024 7 7
         x = self.projector(x)  # feature map to s2 signal on sphere
-
-        #################################
-        # This aligns harmonics to OPENGL (camera) frame
-        # x = rotate_s2(x.cpu(), gamma=3 * np.pi / 2).to(x.device)
-        # This aligns camera frame to gripper frame
-        # x = rotate_s2(x.cpu(), beta=np.pi).to(x.device)
-        #################################
-        # combine signals to camera and camera to gripper frame. This changes the polar axis of the harmonics to the z-axis.
-        x = torch.einsum("ij,...j->...i", self.camera_cali, x)
 
         #  Equivariance Correction by the gripper pose in the world frame.
         x = torch.einsum(

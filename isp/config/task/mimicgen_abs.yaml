@@ -37,7 +37,7 @@ env_runner:
   past_action: ${past_action_visible}
   abs_action: *abs_action
   tqdm_interval_sec: 1.0
-  n_envs: 19
+  n_envs: 56
 
 dataset:
   _target_: ${dataset}

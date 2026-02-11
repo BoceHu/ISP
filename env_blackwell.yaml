@@ -20,6 +20,7 @@ dependencies:
   - dill=0.3.5.1
   - scikit-video=1.1.11
   - scikit-image=0.19.3
+  - scikit-learn=1.6.1
   - gym=0.21.0
   - pymunk=6.2.1
   - threadpoolctl=3.1.0
